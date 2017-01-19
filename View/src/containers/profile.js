@@ -42,11 +42,6 @@ Profile.propTypes = {
     toggleBoolean: PropTypes.func.isRequired
 };
 
-/**
- * Convert application state to props.
- * @param {Object} state - Application state
- * @returns {Object} Updated props
- */
-const mapStateToProps = state => ({profile: state.profile});
+const mapStateToProps = (state) => ({profile: state.profile});
 
 export default connect(mapStateToProps, {toggleBoolean})(Profile);
