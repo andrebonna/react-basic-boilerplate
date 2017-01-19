@@ -6,6 +6,7 @@ Small list of included things in the project
 ---
 * React
 * Redux
+* Redux-Thunk
 * Jest
 * Enzyme
 * ESLint (with Airbnb config included)
