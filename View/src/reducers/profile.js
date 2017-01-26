@@ -1,4 +1,4 @@
-import {TOGGLE_BOOLEAN} from '../constants/types';
+import {TOGGLE_BOOLEAN, CHANGE_TEXT} from '../constants/types';
 
 const defaultState = {
     isOk: false,
@@ -16,6 +16,12 @@ export default function reducer(state = defaultState, action) {
             return {
                 ...state,
                 isOk: !state.isOk
+            };
+        }
+        case CHANGE_TEXT: {
+            return {
+                ...state,
+                text: action.value
             };
         }
         default: {

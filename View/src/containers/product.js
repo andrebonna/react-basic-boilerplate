@@ -4,11 +4,11 @@ import {connect} from 'react-redux';
 import {toggleBoolean} from '../actions';
 import ProfileContent from '../components/profile-content';
 
-class Profile extends Component {
+class Product extends Component {
     constructor() {
         super();
 
-        this.state = {text: 'Title'};
+        this.state = {text: 'Product'};
 
         this.onChange = this.onChange.bind(this);
         this.onClick = this.onClick.bind(this);
@@ -37,11 +37,11 @@ class Profile extends Component {
     }
 }
 
-Profile.propTypes = {
+Product.propTypes = {
     profile: PropTypes.object.isRequired,
     toggleBoolean: PropTypes.func.isRequired
 };
 
 const mapStateToProps = (state) => ({profile: state.profile});
 
-export default connect(mapStateToProps, {toggleBoolean})(Profile);
+export default connect(mapStateToProps, {toggleBoolean})(Product);

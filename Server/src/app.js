@@ -1,6 +1,8 @@
+import path from 'path';
 import express from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
+import serveStatic from 'serve-static';
 import order from './schemas/order';
 import product from './schemas/product';
 import supplier from './schemas/supplier';
@@ -10,16 +12,19 @@ import config from '../config/config';
 const app = express();
 
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/mbStock');
+mongoose.connect('mongodb://localhost/warehouseControl');
 
 expressCRUD.init(app);
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use('/', express.static('View/public'));
+app.crud('api/order', order);
+app.crud('api/product', product);
+app.crud('api/supplier', supplier);
 
-app.crud('order', order);
-app.crud('product', product);
-app.crud('supplier', supplier);
+
+app.use(serveStatic(path.resolve('View/public')), (req, res) => {
+    res.sendFile(path.resolve('View/public/index.html'));
+});
 
 app.listen(config.port);

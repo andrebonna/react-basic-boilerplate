@@ -11,8 +11,11 @@ const webpackConfig = {
             loader: 'babel-loader',
             test: /\.js$/
         }, {
-            loader: ExtractTextPlugin.extract(['css-loader?sourceMap!sass-loader?sourceMap']),
+            loader: ExtractTextPlugin.extract(['css-loader!sass-loader']),
             test: /\.scss$/
+        }, {
+            test: /\.(jpg|jpeg|gif|png|ttf|eot|svg|woff(2)?)$/,
+            loader: 'url-loader'
         }]
     },
     output: {
@@ -30,8 +33,6 @@ const webpackConfig = {
 };
 
 if (process.env.NODE_ENV === 'production') {
-    webpackConfig.devtool = 'source-map';
-
     const time = new Date().getTime();
     const stylesProd = new ExtractTextPlugin(`${time}-bundle.css`);
     webpackConfig.output.filename = `${time}-bundle.js`;

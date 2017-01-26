@@ -1,0 +1,19 @@
+.tab-panel {
+
+  display: flex;
+  background-color: lightgray;
+
+  .tab {
+    cursor: pointer;
+    padding: 10px;
+
+    &.active {
+      background-color: white;
+    }
+
+    h3 {
+      margin: 0;
+    }
+  }
+
+}

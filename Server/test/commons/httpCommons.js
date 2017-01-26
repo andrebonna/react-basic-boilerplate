@@ -4,7 +4,7 @@ import request from 'request-promise-native';
 export default class httpCommons {
 
     constructor() {
-        this.url = `${config.protocol}://${config.address}:${config.port}/`;
+        this.url = `${config.protocol}://${config.address}:${config.port}/api/`;
     }
 
     get(resource, id) {

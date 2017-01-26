@@ -1,1 +1,7 @@
-@import "pages/profile-content";
+@import "~bootstrap/dist/css/bootstrap.css";
+@import "~bootstrap/dist/css/bootstrap-theme.css";
+@import '~react-table/react-table.css';
+
+
+@import "components/tab-panel";
+@import "components/table";
