@@ -3,14 +3,12 @@ pipeline {
 
     stages {
         stage('Test') {
-            steps {
-                echo 'Building..'
-                def node = docker.image('node')
-                node.pull()
-                node.inside {
-                    sh "npm install"
-                    sh "npm test"
-                }
+            echo 'Building..'
+            def node = docker.image('node')
+            node.pull()
+            node.inside {
+                sh "npm install"
+                sh "npm test"
             }
         }
         stage('Deploy') {
