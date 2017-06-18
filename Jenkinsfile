@@ -10,14 +10,14 @@
 // }
 
 def hostIp(container) {
-  sh "docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${container.id} > hostIp"
+  def ip = sh script: "docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${container.id}", returnStdout: true
+  return ip
   // return readFile('hostIp').trim()
 }
 
 
 docker.image('mongo').withRun('-p 27025:27017') {c ->
 
-    echo c
-    hostIp(c)
-    echo "http://${readFile('hostIp').trim()}:27025/"
+    echo hostIp(c)
+    //echo "http://${readFile('hostIp').trim()}:27025/"
 }
