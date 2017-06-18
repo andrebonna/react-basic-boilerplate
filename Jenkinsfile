@@ -15,7 +15,7 @@ def hostIp(container) {
   // return readFile('hostIp').trim()
 }
 
-docker.image('mongo').withRun('-p 27025:27017') {c ->
+docker.image('mongo').withRun('-p 27017:27017') {c ->
 
     def mongo = hostIp(c)
     docker.image('jenkins-slave-bonna').inside {
@@ -23,9 +23,8 @@ docker.image('mongo').withRun('-p 27025:27017') {c ->
         echo 'Building..'
 
         sh "npm install"
-        sh "MONGO_DB=${mongo} MONGO_DB_PORT=27025 npm start"
+        sh "MONGO_DB=${mongo} npm start &"
         sh "npm test"
 
     }
-    //echo "http://${readFile('hostIp').trim()}:27025/"
 }
