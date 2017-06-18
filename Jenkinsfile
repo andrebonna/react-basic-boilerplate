@@ -15,7 +15,7 @@ def hostIp(container) {
   // return readFile('hostIp').trim()
 }
 
-docker.image('mongo').withRun('-p 27017:27017') {c ->
+docker.image('mongo').withRun() {c ->
 
     def mongo = hostIp(c)
     docker.image('jenkins-slave-bonna').inside {
