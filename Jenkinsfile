@@ -11,7 +11,7 @@
 
 def hostIp(container) {
   sh "docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${container.id} > hostIp"
-  readFile('hostIp').trim()
+  return readFile('hostIp').trim()
 }
 
 
