@@ -17,6 +17,7 @@ def hostIp(container) {
 
 docker.image('mongo').withRun('-p 27025:27017') {c ->
 
+    echo c
     hostIp(c)
     echo "http://${readFile('hostIp').trim()}:27025/"
 }
