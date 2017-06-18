@@ -23,8 +23,7 @@ docker.image('mongo').withRun() {c ->
         echo 'Building..'
 
         sh "npm install"
-        sh "MONGO_DB=${mongo} npm start &"
-        sh "npm test"
+        sh "MONGO_DB=${mongo} npm start"
 
     }
 }
