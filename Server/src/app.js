@@ -11,11 +11,8 @@ import config from '../config/config';
 
 const app = express();
 
-const mongoDB = process.env.MONGO_DB || 'localhost';
-const mongoDBPort = process.env.MONGO_DB_PORT || '27017';
-
 mongoose.Promise = Promise;
-mongoose.connect(`mongodb://${mongoDB}:${mongoDBPort}/warehouseControl`);
+mongoose.connect(`mongodb://${config.mongoDB}:${config.mongoDBPort}/warehouseControl`);
 
 expressCRUD.init(app);
 

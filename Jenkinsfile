@@ -23,7 +23,14 @@ docker.image('mongo').withRun() {c ->
         echo 'Building..'
 
         sh "npm install"
-        sh "MONGO_DB=${mongo} npm start"
+        sh "MONGO_DB=${mongo} PORT=3000 npm start &"
+        timeout(240) {
+            waitUntil {
+                def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
+                return (r == 0);
+            }
+        }
+        sh "npm test"
 
     }
 }
