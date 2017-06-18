@@ -14,8 +14,7 @@ def hostIp(container) {
   readFile('hostIp').trim()
 }
 
-docker.withServer('tcp://192.168.0.106:4243') {
-    docker.image('mongodb').withRun('-p 27017:27017') {c ->
-        echo "http://${hostIp(c)}:27017/"
-    }
+
+docker.image('mongo').withRun('-p 27017:27017') {c ->
+    echo "http://${hostIp(c)}:27017/"
 }
