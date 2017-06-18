@@ -15,6 +15,6 @@ def hostIp(container) {
 }
 
 
-docker.image('mongo').withRun('-p 27017:27017') {c ->
+docker.image('mongo').withRun('-p 27025:27017') {c ->
     echo "http://${hostIp(c)}:27017/"
 }
