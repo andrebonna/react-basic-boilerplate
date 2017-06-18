@@ -3,5 +3,5 @@ export default {
     address: process.env.ADDRESS || 'localhost',
     port: process.env.PORT || 3000,
     mongoDB: process.env.MONGO_DB || 'localhost',
-    mongoDBPort process.env.MONGO_DB_PORT || '27017'
+    mongoDBPort: process.env.MONGO_DB_PORT || '27017'
 }
