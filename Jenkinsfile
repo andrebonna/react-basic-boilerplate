@@ -18,7 +18,7 @@ def hostIp(container) {
 docker.image('mongo').withRun() {c ->
 
     def mongo = hostIp(c)
-    docker.image('jenkins-slave-bonna').inside {
+    docker.image('jenkins-slave').inside {
         checkout scm
         echo 'Building..'
 
