@@ -22,15 +22,17 @@ def removeImage(imageName) {
 }
 
 node {
-    stopContainer('build-mongo')
-    def c = docker.image('mongo').run('--name build-mongo')
+    def mongo = mongoURL
+    if (mongo == null || mongo == '') {
+        stopContainer('build-mongo')
+        def c = docker.image('mongo').run('--name build-mongo')
+        mongo = hostIp(c)
+    }
 
-    def mongo = hostIp(c)
     docker.image('andrebonna/jenkins-slave-node7').inside {
         checkout scm
         echo 'Building..'
         stage ('Install') {
-            echo clean
             if (clean != null && clean == "true") {
                 sh "rm -Rf node_modules"
             }
