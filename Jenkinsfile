@@ -3,17 +3,29 @@ def hostIp(container) {
     return ip.trim()
 }
 
-node {
+def stopContainer(containerName) {
     try {
-        sh "docker rm \$(docker stop build-mongo)"
+        sh "docker rm \$(docker stop ${containerName})"
     }
     catch(Exception ex) {
-        echo "First time container mongo is created!"
+        echo "Container ${containerName} do not exist!"
     }
+}
+
+def removeImage(imageName) {
+    try {
+        sh "docker rmi ${imageName}"
+    }
+    catch(Exception ex) {
+        echo "Image ${imageName} do not exist!"
+    }
+}
+
+node {
+    stopContainer('build-mongo')
     def c = docker.image('mongo').run('--name build-mongo')
     //{c ->
     def mongo = hostIp(c)
-
     docker.image('andrebonna/jenkins-slave-node7').inside {
         checkout scm
         echo 'Building..'
@@ -42,6 +54,14 @@ node {
                 reportTitles: ''
             ])
         }
+    }
+
+    stage ('Deploy') {
+        checkout scm
+        removeImage('warehouse-control')
+        stopContainer('warehouse-control')
+        def path = sh script: "pwd", returnStdout: true
+        docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 -v ${path}:/warehouse-control")
     }
 
 }
