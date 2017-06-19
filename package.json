@@ -17,6 +17,9 @@
       "node_modules/react/",
       "node_modules/enzyme/"
     ],
+    "collectCoverage": true,
+    "collectCoverageFrom": ["**/*.js", "!node_modules/**", "!**/public/**", "!**/*.spec.js"],
+    "coverageReporters": ["cobertura", "html"],
     "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "dependencies": {
