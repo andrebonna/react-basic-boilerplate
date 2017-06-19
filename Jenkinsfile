@@ -5,7 +5,7 @@ def hostIp(container) {
 
 node {
     try {
-        sh "docker rm $(docker stop build-mongo)"
+        sh "docker rm \$(docker stop build-mongo)"
     }
     catch(Exception ex) {
         echo "First time container mongo is created!"
