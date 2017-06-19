@@ -3,17 +3,21 @@ def hostIp(container) {
     return ip.trim()
 }
 
-def c = docker.image('mongo').run() 
-//{c ->
-def mongo = hostIp(c)
+node {
+    def c = docker.image('mongo').run()
+    //{c ->
+    def mongo = hostIp(c)
+
+}
+
 docker.image('andrebonna/jenkins-slave-node7').inside {
     checkout scm
     echo 'Building..'
     stage ('Install') {
-    	sh "NODE_ENV=development npm install"
+        sh "NODE_ENV=development npm install"
     }
     stage ('Start') {
-    	sh "MONGO_DB=${mongo} PORT=3000 npm start &"
+        sh "MONGO_DB=${mongo} PORT=3000 npm start &"
         timeout(1) {
             waitUntil {
                 def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
@@ -22,7 +26,7 @@ docker.image('andrebonna/jenkins-slave-node7').inside {
         }
     }
     stage ('Test') {
-    	sh "npm test"
+        sh "npm test"
         junit 'test-report.xml'
         publishHTML([
             allowMissing: false,
@@ -35,4 +39,5 @@ docker.image('andrebonna/jenkins-slave-node7').inside {
         ])
     }
 }
+
 //}
