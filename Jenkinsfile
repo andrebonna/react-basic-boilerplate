@@ -14,7 +14,7 @@ def stopContainer(containerName) {
 
 def removeImage(imageName) {
     try {
-        sh "docker rmi ${imageName}"
+        sh "docker rmi -f ${imageName}"
     }
     catch(Exception ex) {
         echo "Image ${imageName} do not exist!"
@@ -24,7 +24,7 @@ def removeImage(imageName) {
 node {
     stopContainer('build-mongo')
     def c = docker.image('mongo').run('--name build-mongo')
-    //{c ->
+
     def mongo = hostIp(c)
     docker.image('andrebonna/jenkins-slave-node7').inside {
         checkout scm
@@ -57,16 +57,8 @@ node {
     }
 
     stage ('Deploy') {
-        checkout scm
         stopContainer('warehouse-control')
         removeImage('warehouse-control')
-        def path = sh script: "pwd", returnStdout: true
-        path = path.trim()
         docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 --env MONGO_DB=${mongo}")
     }
-
 }
-
-
-
-//}
