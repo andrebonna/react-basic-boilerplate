@@ -9,7 +9,7 @@ docker.image('mongo').withRun() {c ->
         checkout scm
         echo 'Building..'
         stage ('Install') {
-            sh "npm cache clean"
+            sh "npm cache verify"
         	sh "npm install"
         }
         stage ('Start') {
