@@ -29,6 +29,8 @@ node {
         mongo = hostIp(c)
     }
 
+    mongo = mongo.trim()
+
     docker.image('andrebonna/jenkins-slave-node7').inside {
         checkout scm
         echo 'Building..'
