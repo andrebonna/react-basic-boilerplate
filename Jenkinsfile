@@ -9,7 +9,7 @@ docker.image('mongo').withRun() {c ->
         checkout scm
         echo 'Building..'
         stage ('Install') {
-            sh "NODE_ENV=dev npm install --only=dev"
+            sh "rm -Rf node_modules"
         	sh "npm install"
         }
         stage ('Start') {
