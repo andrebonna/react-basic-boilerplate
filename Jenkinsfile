@@ -31,7 +31,7 @@ node {
         echo 'Building..'
         stage ('Install') {
             echo clean
-            if (clean != null && clean == true) {
+            if (clean != null && clean == "true") {
                 sh "rm -Rf node_modules"
             }
             sh "NODE_ENV=development npm install"
