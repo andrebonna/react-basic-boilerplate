@@ -4,7 +4,8 @@ def hostIp(container) {
 }
 
 node {
-    def c = docker.image('mongo').run()
+    sh "docker rm -f build-mongo"    
+    def c = docker.image('mongo').run('--name build-mongo')
     //{c ->
     def mongo = hostIp(c)
 
