@@ -13,13 +13,13 @@ docker.image('mongo').withRun() {c ->
         }
         stage ('Start') {
         	sh "MONGO_DB=${mongo} PORT=3000 npm start &"
-        }
-        timeout(1) {
-            waitUntil {
-                def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
-                return (r == 0);
+            timeout(1) {
+                waitUntil {
+                    def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
+                    return (r == 0);
+                }
             }
-        }
+        }    
         stage ('Test') {
         	sh "npm test"
         }
