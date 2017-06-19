@@ -4,7 +4,12 @@ def hostIp(container) {
 }
 
 node {
-    sh "docker rm -f --ignore build-mongo"    
+    try {
+        sh "docker rm $(docker stop build-mongo)"
+    }
+    catch(Exception ex) {
+        echo "First time container mongo is created!"
+    }
     def c = docker.image('mongo').run('--name build-mongo')
     //{c ->
     def mongo = hostIp(c)
