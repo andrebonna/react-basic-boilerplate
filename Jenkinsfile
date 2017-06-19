@@ -30,6 +30,7 @@ node {
         checkout scm
         echo 'Building..'
         stage ('Install') {
+            echo clean
             if (clean != null && clean == true) {
                 sh "rm -Rf node_modules"
             }
