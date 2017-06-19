@@ -60,7 +60,8 @@ node {
         checkout scm
         removeImage('warehouse-control')
         stopContainer('warehouse-control')
-        def path = (sh script: "pwd", returnStdout: true).trim()
+        def path = sh script: "pwd", returnStdout: true
+        path = path.trim()
         docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 -v ${path}:/warehouse-control --env MONGO_DB=${mongo}")
     }
 
