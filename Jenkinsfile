@@ -9,8 +9,7 @@ docker.image('mongo').withRun() {c ->
         checkout scm
         echo 'Building..'
         stage ('Install') {
-            sh "npm prune"
-        	sh "npm install"
+        	sh "NODE_ENV=dev npm install"
         }
         stage ('Start') {
         	sh "MONGO_DB=${mongo} PORT=3000 npm start &"
