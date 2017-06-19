@@ -30,6 +30,9 @@ node {
         checkout scm
         echo 'Building..'
         stage ('Install') {
+            if (${clean} != null) {
+                sh "rm -Rf node_modules"
+            }
             sh "NODE_ENV=development npm install"
         }
         stage ('Start') {
