@@ -16,7 +16,8 @@
     "unmockedModulePathPatterns": [
       "node_modules/react/",
       "node_modules/enzyme/"
-    ]
+    ],
+    "testResultsProcessor": "./node_modules/jest-junit-reporter"
   },
   "dependencies": {
     "body-parser": "^1.16.0",
@@ -58,6 +59,7 @@
     "html-webpack-plugin": "^2.26.0",
     "jest": "^17.0.0",
     "jest-cli": "^17.0.0",
+    "jest-junit-reporter": "^1.1.0",
     "node-sass": "^4.3.0",
     "sass-loader": "^4.1.1",
     "url-loader": "^0.5.7",

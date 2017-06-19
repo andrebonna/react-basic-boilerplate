@@ -19,9 +19,10 @@ docker.image('mongo').withRun() {c ->
                     return (r == 0);
                 }
             }
-        }    
+        }
         stage ('Test') {
         	sh "npm test"
+            junit 'test-report.xml'
         }
     }
 }
