@@ -23,6 +23,7 @@ def removeImage(imageName, host) {
 
 def runTests(mongo, clean) {
     docker.image('node:7').inside {
+        checkout scm
         echo 'Building..'
         stage ('Install') {
             if (clean != null && clean) {
@@ -60,7 +61,6 @@ def deploy(mongo) {
 }
 
 node {
-    checkout scm
     def mongo = params.mongoURL
     def daemonHost = params.host
     if (params.host == null) {
@@ -86,11 +86,11 @@ node {
     mongo = mongo.trim()
 
     if (params.host == null) {
-        runTests(mongo, params.clean);
+        runTests(mongo, params.clean)
     }
     else {
         docker.withServer(params.host) {
-            runTests(mongo, params.clean);
+            runTests(mongo, params.clean)
         }
     }
 
