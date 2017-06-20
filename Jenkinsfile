@@ -1,9 +1,9 @@
-def hostIp(container) {
+def hostIp(container, host) {
     def ip = sh script: "docker inspect --format='{{.NetworkSettings.IPAddress}}' ${container.id}", returnStdout: true
     return ip.trim()
 }
 
-def stopContainer(containerName) {
+def stopContainer(containerName, host) {
     try {
         sh "docker rm \$(docker stop ${containerName})"
     }
@@ -12,7 +12,7 @@ def stopContainer(containerName) {
     }
 }
 
-def removeImage(imageName) {
+def removeImage(imageName, host) {
     try {
         sh "docker rmi -f ${imageName}"
     }
@@ -21,55 +21,82 @@ def removeImage(imageName) {
     }
 }
 
+def runTests(mongo, clean) {
+    docker.image('node:7').inside {
+        echo 'Building..'
+        stage ('Install') {
+            if (clean != null && clean) {
+                sh "rm -Rf node_modules"
+            }
+            sh "NODE_ENV=development yarn install"
+        }
+        stage ('Start') {
+            sh "MONGO_DB=${mongo} PORT=3000 yarn start &"
+            timeout(5) {
+                waitUntil {
+                    def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
+                    return (r == 0);
+                }
+            }
+        }
+        stage ('Test') {
+            sh "yarn test"
+            junit 'test-report.xml'
+            publishHTML([
+                allowMissing: false,
+                alwaysLinkToLastBuild: false,
+                keepAll: false,
+                reportDir: 'coverage',
+                reportFiles: 'index.html',
+                reportName: 'HTML Report',
+                reportTitles: ''
+            ])
+        }
+    }
+}
+
+def deploy(mongo) {
+    docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 --env MONGO_DB=${mongo}")
+}
+
 node {
     checkout scm
+    def mongo = params.mongoURL
+    def daemonHost = params.host
+    if (params.host == null) {
+        daemonHost = '';
+    }
+    else {
+        daemonHost = "-H ${daemonHost}";
+    }
 
-    def c = docker.image('mongo').run('--name build-mongo')
-    echo c.id
-    // def mongo = params.mongoURL
-    //
-    // stopContainer('build-mongo')
-    // if (mongo == null || mongo == '') {
-    //     def c = docker.image('mongo').run('--name build-mongo')
-    //     mongo = hostIp(c)
-    // }
-    // mongo = mongo.trim()
-    //
-    // docker.image('node:7').inside {
-    //     echo 'Building..'
-    //     stage ('Install') {
-    //         if (params.clean != null && params.clean) {
-    //             sh "rm -Rf node_modules"
-    //         }
-    //         sh "NODE_ENV=development yarn install"
-    //     }
-    //     stage ('Start') {
-    //         sh "MONGO_DB=${mongo} PORT=3000 yarn start &"
-    //         timeout(5) {
-    //             waitUntil {
-    //                 def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
-    //                 return (r == 0);
-    //             }
-    //         }
-    //     }
-    //     stage ('Test') {
-    //         sh "yarn test"
-    //         junit 'test-report.xml'
-    //         publishHTML([
-    //             allowMissing: false,
-    //             alwaysLinkToLastBuild: false,
-    //             keepAll: false,
-    //             reportDir: 'coverage',
-    //             reportFiles: 'index.html',
-    //             reportName: 'HTML Report',
-    //             reportTitles: ''
-    //         ])
-    //     }
-    // }
-    //
-    // stage ('Deploy') {
-    //     stopContainer('warehouse-control')
-    //     removeImage('warehouse-control')
-    //     docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 --env MONGO_DB=${mongo}")
-    // }
+    stopContainer('build-mongo', daemonHost)
+    if (mongo == null || mongo == '') {
+        def c = docker.image('mongo').run('--name build-mongo')
+        mongo = hostIp(c)
+    }
+    mongo = mongo.trim()
+
+    if (params.host == null) {
+        runTests(mongo, params.clean);
+    }
+    else {
+        docker.withServer(params.host) {
+            runTests(mongo, params.clean);
+        }
+    }
+
+    stage ('Deploy') {
+        stopContainer('warehouse-control', daemonHost)
+        removeImage('warehouse-control', daemonHost)
+
+        if (params.host == null) {
+            deploy(mongo)
+        }
+        else {
+            docker.withServer(params.host) {
+                deploy(mongo)
+            }
+        }
+    }
 }
