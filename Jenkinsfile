@@ -22,7 +22,8 @@ def removeImage(imageName) {
 }
 
 node {
-    def mongo = mongoURL
+    checkout scm
+    def mongo = params.mongoURL
     if (mongo == null || mongo == '') {
         stopContainer('build-mongo')
         def c = docker.image('mongo').run('--name build-mongo')
@@ -32,10 +33,9 @@ node {
     mongo = mongo.trim()
 
     docker.image('andrebonna/jenkins-slave-node7').inside {
-        checkout scm
         echo 'Building..'
         stage ('Install') {
-            if (clean != null && clean == "true") {
+            if (params.clean != null && params.clean == "true") {
                 sh "rm -Rf node_modules"
             }
             sh "NODE_ENV=development npm install"
