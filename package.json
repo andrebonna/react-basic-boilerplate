@@ -8,8 +8,8 @@
     "webpack-prod": "NODE_ENV=production webpack",
     "express-server": "babel-node ./Server/src/app",
     "lint": "eslint --quiet View/src/** Server/** *.js",
-    "dev": "concurrently --kill-others \"npm run webpack-dev\" \"npm run express-server\"",
-    "start": "npm run lint && npm run webpack-prod && npm run express-server",
+    "dev": "concurrently --kill-others \"yarn webpack-dev\" \"yarn express-server\"",
+    "start": "yarn lint && yarn webpack-prod && yarn express-server",
     "test": "jest"
   },
   "jest": {

@@ -4,4 +4,4 @@ EXPOSE 3000
 COPY . /warehouse-control
 WORKDIR /warehouse-control
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
