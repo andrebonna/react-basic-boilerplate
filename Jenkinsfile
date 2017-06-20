@@ -32,7 +32,7 @@ node {
 
     mongo = mongo.trim()
 
-    docker.image('andrebonna/jenkins-slave-node7').inside {
+    docker.image('andrebonna/docker-jenkins').inside {
         echo 'Building..'
         stage ('Install') {
             if (params.clean != null && params.clean == "true") {
