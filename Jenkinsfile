@@ -5,7 +5,7 @@ def hostIp(container, host) {
 
 def stopContainer(containerName, host) {
     try {
-        sh "docker ${host} rm \$(docker stop ${containerName})"
+        sh "docker ${host} rm \$(docker ${host} stop ${containerName})"
     }
     catch(Exception ex) {
         echo "Container ${containerName} do not exist!"
