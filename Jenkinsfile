@@ -67,15 +67,15 @@ node {
         stopContainer('build-mongo')
         if (mongo == null || mongo == '') {
             def c = docker.image('mongo').run('--name build-mongo')
-            mongo = hostIp(c, daemonHost)
+            mongo = hostIp(c)
         }
         mongo = mongo.trim()
 
         runTests(mongo, params.clean)
 
         stage ('Deploy') {
-            stopContainer('warehouse-control', daemonHost)
-            removeImage('warehouse-control', daemonHost)
+            stopContainer('warehouse-control')
+            removeImage('warehouse-control')
 
             deploy(mongo)
         }
