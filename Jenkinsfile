@@ -1,11 +1,11 @@
 def hostIp(container, host) {
-    def ip = sh script: "docker inspect --format='{{.NetworkSettings.IPAddress}}' ${container.id}", returnStdout: true
+    def ip = sh script: "docker ${host} inspect --format='{{.NetworkSettings.IPAddress}}' ${container.id}", returnStdout: true
     return ip.trim()
 }
 
 def stopContainer(containerName, host) {
     try {
-        sh "docker rm \$(docker stop ${containerName})"
+        sh "docker ${host} rm \$(docker stop ${containerName})"
     }
     catch(Exception ex) {
         echo "Container ${containerName} do not exist!"
@@ -14,7 +14,7 @@ def stopContainer(containerName, host) {
 
 def removeImage(imageName, host) {
     try {
-        sh "docker rmi -f ${imageName}"
+        sh "docker ${host} rmi -f ${imageName}"
     }
     catch(Exception ex) {
         echo "Image ${imageName} do not exist!"
@@ -72,8 +72,16 @@ node {
 
     stopContainer('build-mongo', daemonHost)
     if (mongo == null || mongo == '') {
-        def c = docker.image('mongo').run('--name build-mongo')
-        mongo = hostIp(c)
+        def c
+        if (params.host == null) {
+            c = docker.image('mongo').run('--name build-mongo')
+        }
+        else {
+            docker.withServer(params.host) {
+                c = docker.image('mongo').run('--name build-mongo')
+            }
+        }
+        mongo = hostIp(c, daemonHost)
     }
     mongo = mongo.trim()
 
