@@ -24,18 +24,18 @@ def removeImage(imageName) {
 node {
     checkout scm
     def mongo = params.mongoURL
+
+    stopContainer('build-mongo')
     if (mongo == null || mongo == '') {
-        stopContainer('build-mongo')
         def c = docker.image('mongo').run('--name build-mongo')
         mongo = hostIp(c)
     }
-
     mongo = mongo.trim()
 
     docker.image('node:7').inside {
         echo 'Building..'
         stage ('Install') {
-            if (params.clean != null && params.clean == "true") {
+            if (params.clean != null && params.clean) {
                 sh "rm -Rf node_modules"
             }
             sh "NODE_ENV=development npm install"
