@@ -60,7 +60,7 @@ def deploy(mongo) {
     docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 --env MONGO_DB=${mongo}")
 }
 
-node('docker') {
+node('docker-slave') {
     // docker.withServer(params.host) {
 
     def mongo = params.mongoURL
