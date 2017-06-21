@@ -23,7 +23,6 @@ def removeImage(imageName) {
 
 def runTests(mongo, clean) {
     docker.image('node:7').inside {
-        checkout scm
         echo 'Building..'
         stage ('Install') {
             if (clean != null && clean) {
@@ -60,9 +59,9 @@ def deploy(mongo) {
     docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 --env MONGO_DB=${mongo}")
 }
 
-node {
+node('docker-slave') {
     // docker.withServer(params.host) {
-
+    checkout scm
     def mongo = params.mongoURL
 
     stopContainer('build-mongo')
