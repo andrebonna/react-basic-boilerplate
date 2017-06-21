@@ -83,11 +83,15 @@ def deploy(mongo) {
 // }
 
 pipeline {
-    agent docker
+    agent {
+        docker
+    }
 
     stages {
         stage('Deploy') {
-            echo 'test'
+            steps {
+                echo 'test'
+            }
         }
     }
 }
