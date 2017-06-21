@@ -22,36 +22,34 @@ def removeImage(imageName) {
 }
 
 def runTests(mongo, clean) {
-    docker.image('node:7').inside {
-        echo 'Building..'
-        stage ('Install') {
-            if (clean != null && clean) {
-                sh "rm -Rf node_modules"
-            }
-            sh "NODE_ENV=development yarn install"
+    echo 'Building..'
+    stage ('Install') {
+        if (clean != null && clean) {
+            sh "rm -Rf node_modules"
         }
-        stage ('Start') {
-            sh "MONGO_DB=${mongo} PORT=3000 yarn start &"
-            timeout(5) {
-                waitUntil {
-                    def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
-                    return (r == 0);
-                }
+        sh "NODE_ENV=development yarn install"
+    }
+    stage ('Start') {
+        sh "MONGO_DB=${mongo} PORT=3000 yarn start &"
+        timeout(5) {
+            waitUntil {
+                def r = sh script: 'wget -q http://localhost:3000 -O /dev/null', returnStatus: true
+                return (r == 0);
             }
         }
-        stage ('Test') {
-            sh "yarn test"
-            junit 'test-report.xml'
-            publishHTML([
-                allowMissing: false,
-                alwaysLinkToLastBuild: false,
-                keepAll: false,
-                reportDir: 'coverage',
-                reportFiles: 'index.html',
-                reportName: 'HTML Report',
-                reportTitles: ''
-            ])
-        }
+    }
+    stage ('Test') {
+        sh "yarn test"
+        junit 'test-report.xml'
+        publishHTML([
+            allowMissing: false,
+            alwaysLinkToLastBuild: false,
+            keepAll: false,
+            reportDir: 'coverage',
+            reportFiles: 'index.html',
+            reportName: 'HTML Report',
+            reportTitles: ''
+        ])
     }
 }
 
@@ -60,7 +58,6 @@ def deploy(mongo) {
 }
 
 node('docker-slave') {
-    // docker.withServer(params.host) {
     checkout scm
     def mongo = params.mongoURL
 
@@ -79,5 +76,4 @@ node('docker-slave') {
 
         deploy(mongo)
     }
-    // }
 }
