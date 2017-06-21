@@ -59,41 +59,25 @@ def deploy(mongo) {
     docker.build('warehouse-control').run("--name warehouse-control -p 3000:3000 --env MONGO_DB=${mongo}")
 }
 
-// node {
-//     // docker.withServer(params.host) {
-//     checkout scm
-//     def mongo = params.mongoURL
-//
-//     stopContainer('build-mongo')
-//     if (mongo == null || mongo == '') {
-//         def c = docker.image('mongo').run('--name build-mongo')
-//         mongo = hostIp(c)
-//     }
-//     mongo = mongo.trim()
-//
-//     runTests(mongo, params.clean)
-//
-//     stage ('Deploy') {
-//         stopContainer('warehouse-control')
-//         removeImage('warehouse-control')
-//
-//         deploy(mongo)
-//     }
-//     // }
-// }
+node('docker-slave') {
+    // docker.withServer(params.host) {
+    checkout scm
+    def mongo = params.mongoURL
 
-pipeline {
-    agent {
-        docker {
-            image 'andrebonna/jenkins-slave-node7'
-        }
+    stopContainer('build-mongo')
+    if (mongo == null || mongo == '') {
+        def c = docker.image('mongo').run('--name build-mongo')
+        mongo = hostIp(c)
     }
+    mongo = mongo.trim()
 
-    stages {
-        stage('Deploy') {
-            steps {
-                echo 'test'
-            }
-        }
+    runTests(mongo, params.clean)
+
+    stage ('Deploy') {
+        stopContainer('warehouse-control')
+        removeImage('warehouse-control')
+
+        deploy(mongo)
     }
+    // }
 }
