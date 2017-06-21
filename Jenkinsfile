@@ -84,7 +84,9 @@ def deploy(mongo) {
 
 pipeline {
     agent {
-        docker
+        docker {
+            image 'andrebonna/jenkins-slave-node7'
+        }
     }
 
     stages {
