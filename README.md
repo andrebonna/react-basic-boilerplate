@@ -1,3 +1,3 @@
 # Warehouse Control Application
 
-Demo application
+Warehouse Control Demo application
