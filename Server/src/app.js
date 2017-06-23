@@ -12,7 +12,7 @@ import config from '../config/config';
 const app = express();
 
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/warehouseControl');
+mongoose.connect(`mongodb://${config.mongoDB}:${config.mongoDBPort}/warehouseControl`);
 
 expressCRUD.init(app);
 
